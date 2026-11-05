@@ -2,6 +2,8 @@
 
 A silver skin with round buttons that take clicks only on their shape and rounded windows.
 
+![Popamp Modern: main window, equalizer and playlist](preview.png)
+
 A vector skin for [Popamp](https://github.com/popamp/popamp), skin format
 version 1. All artwork is the skin's own.
 
