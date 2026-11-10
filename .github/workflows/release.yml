@@ -14,4 +14,6 @@ permissions:
 jobs:
   release:
     uses: popamp/apt/.github/workflows/addon-release.yml@main
+    with:
+      min-popamp: "0.8.0"   # the clock's `align`
     secrets: inherit

@@ -12,11 +12,11 @@ A silver skin with round buttons that take clicks only on their shape and rounde
 ![Popamp Modern: main window, equalizer and playlist](preview.png)
 
 A vector skin for [Popamp](https://github.com/popamp/popamp), skin format
-version 1. All artwork is the skin's own.
+version 1; it needs Popamp 0.8.0 or newer. All artwork is the skin's own.
 
 ## Install
 
-With Popamp 0.6.0 or newer from [apt.popamp.app](https://apt.popamp.app):
+With Popamp 0.8.0 or newer from [apt.popamp.app](https://apt.popamp.app):
 
 ```sh
 sudo apt install popamp-skin-modern

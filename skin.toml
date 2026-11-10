@@ -98,12 +98,13 @@ show = "stopped"
 
 [[window.normal.element]]
 type = "clock"
-rect = [26, 21, 62, 18]
+rect = [26, 21, 63, 18]
+align = "right"
 hide = "stopped"
 
 [[window.normal.element]]
 type = "button"
-rect = [26, 21, 62, 18]
+rect = [26, 21, 63, 18]
 press = "toggle-time-mode"
 menu = "time"
 

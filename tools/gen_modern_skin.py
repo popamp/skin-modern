@@ -263,8 +263,8 @@ def main_toml():
     # Display.
     for i, (flag, x) in enumerate((("playing", 0), ("paused", 9), ("stopped", 18))):
         T.el(n, type="image", rect=[14, 25, 9, 9], normal=part("main/status.svg", x, 0, 9, 9), show=flag)
-    T.el(n, type="clock", rect=[26, 21, 62, 18], hide="stopped")
-    T.el(n, type="button", rect=[26, 21, 62, 18], press="toggle-time-mode", menu="time")
+    T.el(n, type="clock", rect=[26, 21, 63, 18], align="right", hide="stopped")
+    T.el(n, type="button", rect=[26, 21, 63, 18], press="toggle-time-mode", menu="time")
     T.el(n, type="vis", rect=[13, 40, 76, 16])
     T.el(n, type="button", rect=[13, 40, 76, 16], press="cycle-vis-mode", menu="vis")
     T.el(n, type="marquee", rect=[96, 22, 104, 12], area=[2, 1, 100, 10], double="file-info", cursor="songname",
