@@ -659,7 +659,9 @@ def main():
     else:
         T.lines.append("# Popamp Modern: a test skin with round buttons and rounded windows.")
     T.lines.append("# Own artwork; labels are DejaVu Sans Condensed Bold outlines.")
-    T.table("[meta]", name="Popamp Bar" if BAR else "Popamp Modern", author="Popamp", format_version=1)
+    # The main clock's `align` came in Popamp 0.8.0.
+    since = {} if BAR else {"min_popamp": "0.8.0"}
+    T.table("[meta]", name="Popamp Bar" if BAR else "Popamp Modern", author="Popamp", format_version=1, **since)
     T.table("[text]", size=7, color=LCD_TEXT)
     T.table("[clock]", size=10 if BAR else 16, color=LCD_TEXT)
     T.table("[playlist]", normal="#9fd8ff", current="#ffffff", normal_bg="#0d1720", selected_bg="#24496f")
