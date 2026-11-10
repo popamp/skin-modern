@@ -1,5 +1,12 @@
 # Popamp Modern
 
+# ⚠️ This skin was generated automatically
+
+## It needs a designer's edits to make it simpler
+
+The pictures were written by a program, not drawn by a designer, so the
+files are more complicated than the skin needs. Fork it and redraw it.
+
 A silver skin with round buttons that take clicks only on their shape and rounded windows.
 
 ![Popamp Modern: main window, equalizer and playlist](preview.png)
