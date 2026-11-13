@@ -7,22 +7,112 @@ author = "Popamp"
 format_version = 1
 min_popamp = "0.8.0"
 
+[colors.Blue]
+lcd-top = "#0a131b"
+lcd-bottom = "#15222d"
+lcd-text = "#8fd6ff"
+lcd-dim = "#29475a"
+accent = "#2f9bff"
+glow-light = "#7fd0ff"
+glow-dark = "#1f62b8"
+list-text = "#9fd8ff"
+list-bg = "#0d1720"
+list-selected = "#24496f"
+vis-1 = "#1b2a36"
+vis-3 = "#e3f2ff"
+vis-4 = "#c8e4ff"
+vis-5 = "#acd7ff"
+vis-6 = "#90caff"
+vis-7 = "#74bcff"
+vis-8 = "#59afff"
+vis-9 = "#3da2ff"
+vis-10 = "#2d95f6"
+vis-11 = "#2a88e3"
+vis-12 = "#267cd0"
+vis-13 = "#226fbe"
+vis-14 = "#1f63ab"
+vis-15 = "#1b5698"
+vis-16 = "#184a86"
+vis-17 = "#143d73"
+vis-19 = "#c8e8ff"
+vis-21 = "#4fb0f0"
+
+[colors.Green]
+lcd-top = "#0a1b0f"
+lcd-bottom = "#152d1c"
+lcd-text = "#8fffa5"
+lcd-dim = "#295a34"
+accent = "#2fff70"
+glow-light = "#7fff99"
+glow-dark = "#1fb85b"
+list-text = "#9fffb6"
+list-bg = "#0d2013"
+list-selected = "#246f3e"
+vis-1 = "#1b3622"
+vis-3 = "#e3ffeb"
+vis-4 = "#c8ffda"
+vis-5 = "#acffc6"
+vis-6 = "#90ffb3"
+vis-7 = "#74ffa0"
+vis-8 = "#59ff8d"
+vis-9 = "#3dff7a"
+vis-10 = "#2df66c"
+vis-11 = "#2ae366"
+vis-12 = "#26d05e"
+vis-13 = "#22be57"
+vis-14 = "#1fab50"
+vis-15 = "#1b9848"
+vis-16 = "#188642"
+vis-17 = "#14733a"
+vis-19 = "#c8ffd6"
+vis-21 = "#4ff074"
+
+[colors.Pink]
+lcd-top = "#1b0a13"
+lcd-bottom = "#2d1522"
+lcd-text = "#ff8fd6"
+lcd-dim = "#5a2947"
+accent = "#ff2f9b"
+glow-light = "#ff7fd0"
+glow-dark = "#b81f62"
+list-text = "#ff9fd8"
+list-bg = "#200d17"
+list-selected = "#6f2449"
+vis-1 = "#361b2a"
+vis-3 = "#ffe3f2"
+vis-4 = "#ffc8e4"
+vis-5 = "#ffacd7"
+vis-6 = "#ff90ca"
+vis-7 = "#ff74bc"
+vis-8 = "#ff59af"
+vis-9 = "#ff3da2"
+vis-10 = "#f62d95"
+vis-11 = "#e32a88"
+vis-12 = "#d0267c"
+vis-13 = "#be226f"
+vis-14 = "#ab1f63"
+vis-15 = "#981b56"
+vis-16 = "#86184a"
+vis-17 = "#73143d"
+vis-19 = "#ffc8e8"
+vis-21 = "#f04fb0"
+
 [text]
 size = 7
-color = "#8fd6ff"
+color = "lcd-text"
 
 [clock]
 size = 16
-color = "#8fd6ff"
+color = "lcd-text"
 
 [playlist]
-normal = "#9fd8ff"
 current = "#ffffff"
-normal_bg = "#0d1720"
-selected_bg = "#24496f"
+normal = "list-text"
+normal_bg = "list-bg"
+selected_bg = "list-selected"
 
 [vis]
-colors = ["#0a131b", "#1b2a36", "#ffffff", "#e3f2ff", "#c8e4ff", "#acd7ff", "#90caff", "#74bcff", "#59afff", "#3da2ff", "#2d95f6", "#2a88e3", "#267cd0", "#226fbe", "#1f63ab", "#1b5698", "#184a86", "#143d73", "#ffffff", "#c8e8ff", "#8fd6ff", "#4fb0f0", "#2f9bff", "#ffffff"]
+colors = ["lcd-top", "vis-1", "#ffffff", "vis-3", "vis-4", "vis-5", "vis-6", "vis-7", "vis-8", "vis-9", "vis-10", "vis-11", "vis-12", "vis-13", "vis-14", "vis-15", "vis-16", "vis-17", "#ffffff", "vis-19", "lcd-text", "vis-21", "accent", "#ffffff"]
 
 # --- main window ---
 
@@ -385,6 +475,239 @@ click = "toggle-windowshade"
 [[window.shade.element]]
 type = "button"
 rect = [259, 3, 10, 10]
+normal = { file = "common/close.svg", area = [0, 0, 10, 10] }
+pressed = { file = "common/close.svg", area = [10, 0, 10, 10] }
+click = "exit"
+tip = "Close"
+
+# --- the main window as a bar ---
+
+[window.bar]
+edge = "bottom"
+size = [640, 14]
+
+[[window.bar.element]]
+type = "image"
+edges = [0, 0, "end", 14]
+normal = "bar/body.svg"
+fill = "tile"
+
+[[window.bar.element]]
+type = "button"
+rect = [3, 2, 10, 10]
+normal = { file = "common/menu.svg", area = [0, 0, 10, 10] }
+pressed = { file = "common/menu.svg", area = [10, 0, 10, 10] }
+menu_press = "main"
+cursor = "mainmenu"
+tip = "Main Menu"
+
+[[window.bar.element]]
+type = "button"
+rect = [16, 1, 12, 12]
+normal = { file = "bar/prev.svg", area = [0, 0, 12, 12] }
+pressed = { file = "bar/prev.svg", area = [12, 0, 12, 12] }
+hit = { file = "bar/prev.svg", area = [0, 0, 12, 12] }
+click = "previous"
+shift = "back5s"
+ctrl = "start-of-list"
+menu = "previous"
+tip = "Previous"
+
+[[window.bar.element]]
+type = "button"
+rect = [29, 1, 12, 12]
+normal = { file = "bar/play.svg", area = [0, 0, 12, 12] }
+pressed = { file = "bar/play.svg", area = [12, 0, 12, 12] }
+hit = { file = "bar/play.svg", area = [0, 0, 12, 12] }
+click = "play"
+shift = "open-file"
+ctrl = "open-url"
+menu = "play"
+tip = "Play"
+
+[[window.bar.element]]
+type = "button"
+rect = [42, 1, 12, 12]
+normal = { file = "bar/pause.svg", area = [0, 0, 12, 12] }
+pressed = { file = "bar/pause.svg", area = [12, 0, 12, 12] }
+hit = { file = "bar/pause.svg", area = [0, 0, 12, 12] }
+click = "pause"
+menu = "pause"
+tip = "Pause"
+
+[[window.bar.element]]
+type = "button"
+rect = [55, 1, 12, 12]
+normal = { file = "bar/stop.svg", area = [0, 0, 12, 12] }
+pressed = { file = "bar/stop.svg", area = [12, 0, 12, 12] }
+hit = { file = "bar/stop.svg", area = [0, 0, 12, 12] }
+click = "stop"
+shift = "stop-fadeout"
+ctrl = "stop-after-current"
+menu = "stop"
+tip = "Stop"
+
+[[window.bar.element]]
+type = "button"
+rect = [68, 1, 12, 12]
+normal = { file = "bar/next.svg", area = [0, 0, 12, 12] }
+pressed = { file = "bar/next.svg", area = [12, 0, 12, 12] }
+hit = { file = "bar/next.svg", area = [0, 0, 12, 12] }
+click = "next"
+shift = "fwd5s"
+ctrl = "end-of-list"
+menu = "next"
+tip = "Next"
+
+[[window.bar.element]]
+type = "button"
+rect = [81, 1, 12, 12]
+normal = { file = "bar/eject.svg", area = [0, 0, 12, 12] }
+pressed = { file = "bar/eject.svg", area = [12, 0, 12, 12] }
+hit = { file = "bar/eject.svg", area = [0, 0, 12, 12] }
+click = "open-file"
+shift = "open-folder"
+ctrl = "open-url"
+menu = "eject"
+tip = "Open"
+
+[[window.bar.element]]
+type = "image"
+rect = [96, 1, 112, 12]
+normal = "bar/display.svg"
+
+[[window.bar.element]]
+type = "image"
+rect = [99, 3, 9, 9]
+normal = { file = "main/status.svg", area = [0, 0, 9, 9] }
+show = "playing"
+
+[[window.bar.element]]
+type = "image"
+rect = [99, 3, 9, 9]
+normal = { file = "main/status.svg", area = [9, 0, 9, 9] }
+show = "paused"
+
+[[window.bar.element]]
+type = "image"
+rect = [99, 3, 9, 9]
+normal = { file = "main/status.svg", area = [18, 0, 9, 9] }
+show = "stopped"
+
+[[window.bar.element]]
+type = "clock"
+rect = [110, 2, 42, 10]
+font_size = 10
+hide = "stopped"
+
+[[window.bar.element]]
+type = "button"
+rect = [110, 2, 42, 10]
+press = "toggle-time-mode"
+menu = "time"
+
+[[window.bar.element]]
+type = "vis"
+rect = [155, 3, 50, 8]
+
+[[window.bar.element]]
+type = "button"
+rect = [155, 3, 50, 8]
+press = "cycle-vis-mode"
+menu = "vis"
+
+[[window.bar.element]]
+type = "image"
+edges = [210, 1, 214, 13]
+normal = "bar/lcd-left.svg"
+
+[[window.bar.element]]
+type = "image"
+edges = [214, 1, "end-184", 13]
+normal = "bar/lcd-tile.svg"
+fill = "tile"
+
+[[window.bar.element]]
+type = "image"
+edges = ["end-184", 1, "end-180", 13]
+normal = "bar/lcd-right.svg"
+
+[[window.bar.element]]
+type = "marquee"
+edges = [214, 2, "end-184", 9]
+double = "file-info"
+cursor = "songname"
+tip = "Song Title (right-click for options)"
+menu = "song-title"
+
+[[window.bar.element]]
+type = "slider"
+edges = [213, 9, "end-183", 13]
+value = "position"
+thumb = { normal = { file = "bar/seek-thumb.svg", area = [0, 0, 12, 4] }, pressed = { file = "bar/seek-thumb.svg", area = [12, 0, 12, 4] } }
+thumb_len = 12
+live = false
+show = "seekable"
+cursor = "posbar"
+menu = "seek"
+
+[[window.bar.element]]
+type = "slider"
+edges = ["end-175", 3, "end-123", 11]
+value = "volume"
+track = { file = "bar/volume.svg", first = [0, 0, 52, 8], step = [0, 8], count = 28 }
+thumb = { normal = { file = "bar/vol-thumb.svg", area = [0, 0, 8, 8] }, pressed = { file = "bar/vol-thumb.svg", area = [8, 0, 8, 8] } }
+thumb_len = 8
+reset = 200
+wheel_step = 8
+cursor = "volbal"
+tip = "Volume"
+
+[[window.bar.element]]
+type = "toggle"
+edges = ["end-118", 2, "end-94", 12]
+normal = { file = "bar/eq.svg", area = [0, 0, 24, 10] }
+pressed = { file = "bar/eq.svg", area = [24, 0, 24, 10] }
+on = { file = "bar/eq.svg", area = [48, 0, 24, 10] }
+on_pressed = { file = "bar/eq.svg", area = [72, 0, 24, 10] }
+flag = "eq-window"
+click = "toggle-eq-window"
+
+[[window.bar.element]]
+type = "toggle"
+edges = ["end-93", 2, "end-69", 12]
+normal = { file = "bar/pl.svg", area = [0, 0, 24, 10] }
+pressed = { file = "bar/pl.svg", area = [24, 0, 24, 10] }
+on = { file = "bar/pl.svg", area = [48, 0, 24, 10] }
+on_pressed = { file = "bar/pl.svg", area = [72, 0, 24, 10] }
+flag = "playlist-window"
+click = "toggle-playlist-window"
+
+[[window.bar.element]]
+type = "toggle"
+edges = ["end-68", 2, "end-44", 12]
+normal = { file = "bar/shuffle.svg", area = [0, 0, 24, 10] }
+pressed = { file = "bar/shuffle.svg", area = [24, 0, 24, 10] }
+on = { file = "bar/shuffle.svg", area = [48, 0, 24, 10] }
+on_pressed = { file = "bar/shuffle.svg", area = [72, 0, 24, 10] }
+flag = "shuffle"
+click = "toggle-shuffle"
+menu = "shuffle"
+
+[[window.bar.element]]
+type = "toggle"
+edges = ["end-43", 2, "end-19", 12]
+normal = { file = "bar/repeat.svg", area = [0, 0, 24, 10] }
+pressed = { file = "bar/repeat.svg", area = [24, 0, 24, 10] }
+on = { file = "bar/repeat.svg", area = [48, 0, 24, 10] }
+on_pressed = { file = "bar/repeat.svg", area = [72, 0, 24, 10] }
+flag = "repeat"
+click = "toggle-repeat"
+menu = "repeat"
+
+[[window.bar.element]]
+type = "button"
+edges = ["end-13", 2, "end-3", 12]
 normal = { file = "common/close.svg", area = [0, 0, 10, 10] }
 pressed = { file = "common/close.svg", area = [10, 0, 10, 10] }
 click = "exit"

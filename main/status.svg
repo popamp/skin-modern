@@ -2,7 +2,7 @@
 <defs>
 
 </defs>
-<path d="M1.5 0.5 L8.5 4.5 L1.5 8.5 Z" fill="#8fd6ff"/>
-<path d="M10 1 h2.5 v7 h-2.5 Z M14 1 h2.5 v7 h-2.5 Z" fill="#8fd6ff"/>
-<rect x="19.5" y="1.5" width="6" height="6" fill="#8fd6ff"/>
+<path class="lcd-text" d="M1.5 0.5 L8.5 4.5 L1.5 8.5 Z" fill="#8fd6ff"/>
+<path class="lcd-text" d="M10 1 h2.5 v7 h-2.5 Z M14 1 h2.5 v7 h-2.5 Z" fill="#8fd6ff"/>
+<rect class="lcd-text" x="19.5" y="1.5" width="6" height="6" fill="#8fd6ff"/>
 </svg>

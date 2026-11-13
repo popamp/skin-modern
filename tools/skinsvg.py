@@ -3,12 +3,16 @@
 Set `OUT` to the skin folder before saving pictures.
 """
 import os
+import re
 
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
 
 OUT = None
+# Colours a colour set can change, as {"#rrggbb": name}. An element drawn in
+# one of them gets the name as a class, the way the skin format wants it.
+CLASSES = {}
 
 
 # --- svg -------------------------------------------------------------------------
@@ -34,7 +38,19 @@ class Svg:
         path = os.path.join(OUT, name)
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w") as f:
-            f.write(text)
+            f.write(re.sub(r"<\w[^>]*>", with_classes, text))
+
+
+def with_classes(tag):
+    """The tag with a class for each of its colours a colour set can change."""
+    tag = tag.group(0)
+    found = [
+        CLASSES[color] + suffix
+        for attr, suffix in (("fill", ""), ("stroke", "-stroke"), ("stop-color", "-stop"))
+        for color in re.findall(f' {attr}="(#[0-9a-f]{{6}})"', tag)
+        if color in CLASSES
+    ]
+    return re.sub(r"^<(\w+)", rf'<\1 class="{" ".join(found)}"', tag) if found else tag
 
 
 def spread(colors):

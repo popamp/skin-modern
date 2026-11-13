@@ -1,13 +1,14 @@
 """Generates Popamp Modern: SVG pictures and skin.toml.
 
-With a second argument `bar` it makes Popamp Bar instead,
-the same skin with a bar across the screen for a main window.
+The main window has two views: a free window and a bar across the screen,
+which the user switches between in the main menu.
 
 Usage: python3 -I tools/gen_modern_skin.py .
 Needs python3-fonttools and fonts-dejavu-core.
 Own artwork in the spirit of the silver "modern" players; labels are
 DejaVu Sans Condensed Bold outlines.
 """
+import colorsys
 import os
 import sys
 
@@ -16,7 +17,6 @@ import skinsvg  # noqa: E402
 from skinsvg import Outlines, Svg, Toml, look2, look4, part, rrect, val  # noqa: E402
 
 skinsvg.OUT = sys.argv[1]
-BAR = sys.argv[2:] == ["bar"]
 FONT = Outlines("/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed-Bold.ttf")
 text_path, label = FONT.text_path, FONT.label
 
@@ -32,6 +32,55 @@ ACCENT = "#2f9bff"
 FACE = ("#fdfdfe", "#c3c9d1")
 FACE_DOWN = ("#aab2bc", "#e2e6ea")
 RING = "#66707c"
+GLOW = ("#7fd0ff", ACCENT, "#1f62b8")
+LIST = {"normal": "#9fd8ff", "normal_bg": "#0d1720", "selected_bg": "#24496f"}
+WHITE = "#ffffff"
+
+
+def vis_colors():
+    """Background, grid, 16 spectrum steps from the top down and 6 scope shades."""
+    top, mid, bottom = (0xff, 0xff, 0xff), (0x2f, 0x9b, 0xff), (0x14, 0x3d, 0x73)
+    steps = []
+    for i in range(16):
+        t = i / 15
+        a, b, u = (top, mid, t * 2) if t < 0.5 else (mid, bottom, (t - 0.5) * 2)
+        steps.append("#%02x%02x%02x" % tuple(round(a[k] + (b[k] - a[k]) * u) for k in range(3)))
+    return [LCD[0], "#1b2a36"] + steps + [WHITE, "#c8e8ff", LCD_TEXT, "#4fb0f0", ACCENT, WHITE]
+
+
+VIS = vis_colors()
+
+
+# --- colour sets -------------------------------------------------------------
+# The silver body stays as it is; a set changes the display and the lamps,
+# which all share one hue. The other sets are the first one with that hue
+# turned, so the light and dark steps keep their places.
+def first_set():
+    """Every colour a set can change, by name, as the blue set has them."""
+    named = {"lcd-top": LCD[0], "lcd-bottom": LCD[1], "lcd-text": LCD_TEXT, "lcd-dim": LCD_DIM, "accent": ACCENT,
+             "glow-light": GLOW[0], "glow-dark": GLOW[2], "list-text": LIST["normal"], "list-bg": LIST["normal_bg"],
+             "list-selected": LIST["selected_bg"]}
+    for i, color in enumerate(VIS):
+        if color != WHITE and color not in named.values():
+            named[f"vis-{i}"] = color
+    return named
+
+
+def turned(color, degrees):
+    """`color` with its hue turned by `degrees`."""
+    h, l, s = colorsys.rgb_to_hls(*(int(color[i:i + 2], 16) / 255 for i in (1, 3, 5)))
+    return "#%02x%02x%02x" % tuple(round(c * 255) for c in colorsys.hls_to_rgb((h + degrees / 360) % 1, l, s))
+
+
+BLUE = first_set()
+# Name and how far its hue is from the blue set's.
+OTHER_SETS = (("Green", -70), ("Pink", 120))
+skinsvg.CLASSES = {color: name for name, color in BLUE.items()}
+
+
+def named(color):
+    """The colour's name if a colour set can change it."""
+    return skinsvg.CLASSES.get(color, color)
 
 
 # --- drawing -------------------------------------------------------------------
@@ -130,7 +179,7 @@ def fill_frames(name, w, h, count, vertical):
     """A groove filled to k/(count-1), frames stacked down (or across)."""
     fw, fh = (w * count, h) if vertical else (w, h * count)
     svg = Svg(fw, fh)
-    glow = svg.grad(("#7fd0ff", ACCENT, "#1f62b8"), *((1, 0) if vertical else (0, 1)))
+    glow = svg.grad(GLOW, *((1, 0) if vertical else (0, 1)))
     for k in range(count):
         ox, oy = (k * w, 0) if vertical else (0, k * h)
         svg.add(f'<g transform="translate({ox},{oy})">')
@@ -407,10 +456,9 @@ def bar_toml():
     H = BAR_H
     top, bottom = LCD_TOP, LCD_BOTTOM
     left, right = BAR_SPAN
-    T.lines.append("\n# --- bar: the main window ---")
-    T.table("[[window]]", key="main", placement="bar-bottom", empty_press="nothing")
-    T.table("[window.normal]", size=[640, H])
-    n = "normal"
+    T.lines.append("\n# --- the main window as a bar ---")
+    T.table("[window.bar]", edge="bottom", size=[640, H])
+    n = "bar"
     T.el(n, type="image", edges=[0, 0, "end", H], normal="bar/body.svg", fill="tile")
     T.el(n, type="button", rect=[3, 2, 10, 10], **look2("common/menu.svg", 10, 10), menu_press="main",
          cursor="mainmenu", tip="Main Menu")
@@ -429,7 +477,7 @@ def bar_toml():
     T.el(n, type="image", rect=[96, top, 112, bottom - top], normal="bar/display.svg")
     for flag, x in (("playing", 0), ("paused", 9), ("stopped", 18)):
         T.el(n, type="image", rect=[99, 3, 9, 9], normal=part("main/status.svg", x, 0, 9, 9), show=flag)
-    T.el(n, type="clock", rect=[110, 2, 42, 10], hide="stopped")
+    T.el(n, type="clock", rect=[110, 2, 42, 10], font_size=10, hide="stopped")
     T.el(n, type="button", rect=[110, 2, 42, 10], press="toggle-time-mode", menu="time")
     T.el(n, type="vis", rect=[155, 3, 50, 8])
     T.el(n, type="button", rect=[155, 3, 50, 8], press="cycle-vis-mode", menu="vis")
@@ -654,29 +702,20 @@ def playlist_toml():
 
 
 def main():
-    if BAR:
-        T.lines.append("# Popamp Bar: Popamp Modern with a bar across the screen for a main window.")
-    else:
-        T.lines.append("# Popamp Modern: a test skin with round buttons and rounded windows.")
+    T.lines.append("# Popamp Modern: a test skin with round buttons and rounded windows.")
     T.lines.append("# Own artwork; labels are DejaVu Sans Condensed Bold outlines.")
     # The main clock's `align` came in Popamp 0.8.0.
-    since = {} if BAR else {"min_popamp": "0.8.0"}
-    T.table("[meta]", name="Popamp Bar" if BAR else "Popamp Modern", author="Popamp", format_version=1, **since)
-    T.table("[text]", size=7, color=LCD_TEXT)
-    T.table("[clock]", size=10 if BAR else 16, color=LCD_TEXT)
-    T.table("[playlist]", normal="#9fd8ff", current="#ffffff", normal_bg="#0d1720", selected_bg="#24496f")
-    vis = ["#0a131b", "#1b2a36"]
-    top, mid, bottom = (0xff, 0xff, 0xff), (0x2f, 0x9b, 0xff), (0x14, 0x3d, 0x73)
-    for i in range(16):
-        t = i / 15
-        a, b, u = (top, mid, t * 2) if t < 0.5 else (mid, bottom, (t - 0.5) * 2)
-        vis.append("#%02x%02x%02x" % tuple(round(a[k] + (b[k] - a[k]) * u) for k in range(3)))
-    vis += ["#ffffff", "#c8e8ff", "#8fd6ff", "#4fb0f0", "#2f9bff", "#ffffff"]
-    T.table("[vis]", colors=vis)
-    if BAR:
-        bar_window()
-    else:
-        main_window()
+    T.table("[meta]", name="Popamp Modern", author="Popamp", format_version=1, min_popamp="0.8.0")
+    T.table("[colors.Blue]", **BLUE)
+    for name, degrees in OTHER_SETS:
+        T.table(f"[colors.{name}]", **{key: turned(color, degrees) for key, color in BLUE.items()})
+    T.table("[text]", size=7, color=named(LCD_TEXT))
+    T.table("[clock]", size=16, color=named(LCD_TEXT))
+    T.table("[playlist]", current=WHITE, **{key: named(color) for key, color in LIST.items()})
+    T.table("[vis]", colors=[named(color) for color in VIS])
+    main_window()
+    # Right after the main window: its bar view is part of the same window.
+    bar_window()
     eq_window()
     playlist_window()
     T.save()

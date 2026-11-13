@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="150" height="38" viewBox="0 0 150 38">
 <defs>
 <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0.0" stop-color="#d6dbe1"/><stop offset="1.0" stop-color="#b3bac3"/></linearGradient>
-<linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0.0" stop-color="#0a131b"/><stop offset="1.0" stop-color="#15222d"/></linearGradient>
-<linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0.0" stop-color="#0a131b"/><stop offset="1.0" stop-color="#15222d"/></linearGradient>
+<linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop class="lcd-top-stop" offset="0.0" stop-color="#0a131b"/><stop class="lcd-bottom-stop" offset="1.0" stop-color="#15222d"/></linearGradient>
+<linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop class="lcd-top-stop" offset="0.0" stop-color="#0a131b"/><stop class="lcd-bottom-stop" offset="1.0" stop-color="#15222d"/></linearGradient>
 <linearGradient id="g4" x1="0" y1="0" x2="0" y2="1"><stop offset="0.0" stop-color="#fdfdfe"/><stop offset="1.0" stop-color="#c3c9d1"/></linearGradient>
 </defs>
 <path d="M0 0 H150 V31 A7 7 0 0 1 143 38 H0 Z" fill="url(#g1)"/>
@@ -14,7 +14,7 @@
 <rect x="67.5" y="20.5" width="31" height="11" rx="2.5" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.8"/>
 <rect x="68" y="21" width="30" height="10" rx="2" fill="url(#g3)" stroke="#3a4450" stroke-width="1"/>
 <g transform="translate(6,22)"><path d="M0.14999999999999947 0.5 h1.4000000000000001 v7 h-1.4000000000000001 Z M7.5 0.5 v7 L1.9 4 Z" fill="#2b333d"/></g>
-<g transform="translate(15,22)"><path d="M1.5500000000000003 0.14999999999999947 L8.2 4 L1.5500000000000003 7.8500000000000005 Z" fill="#2f9bff"/></g>
+<g transform="translate(15,22)"><path class="accent" d="M1.5500000000000003 0.14999999999999947 L8.2 4 L1.5500000000000003 7.8500000000000005 Z" fill="#2f9bff"/></g>
 <g transform="translate(24,22)"><path d="M0.8500000000000001 0.5 h2.1 v7 h-2.1 Z M5.05 0.5 h2.1 v7 h-2.1 Z" fill="#2b333d"/></g>
 <g transform="translate(33,22)"><rect x="0.8500000000000001" y="0.8500000000000001" width="6.3" height="6.3" fill="#2b333d"/></g>
 <g transform="translate(42,22)"><path d="M7.8500000000000005 0.5 h-1.4000000000000001 v7 h1.4000000000000001 Z M0.5 0.5 v7 L6.1 4 Z" fill="#2b333d"/></g>
