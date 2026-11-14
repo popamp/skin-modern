@@ -254,8 +254,8 @@ def main_art():
     svg.add(f'<line x1="92" y1="23" x2="92" y2="55" stroke="{LCD_DIM}"/>')
     svg.add(label("KBPS", 113, 49.5, 5.5, LCD_DIM, "start"))
     svg.add(label("KHZ", 152, 49.5, 5.5, LCD_DIM, "start"))
-    # Seek groove.
-    svg.add(rrect(8.5, 64.5, 258, 7, 3.5, "#28323c", "#ffffff", 0.8))
+    # Seek groove: as high as the thumb (7 px from y=64), so the thumb sits on it.
+    svg.add(rrect(8.5, 64.5, 258, 6, 3, "#28323c", "#ffffff", 0.8))
     # Volume and balance captions.
     svg.add(label("VOLUME", 197, 85, 6, "#59636f"))
     svg.add(label("BAL", 249, 85, 6, "#59636f"))
