@@ -12,7 +12,7 @@ A silver skin with round buttons that take clicks only on their shape and rounde
 ![Popamp Modern: main window, equalizer and playlist in every colour set, and the bar below](preview.png)
 
 A vector skin for [Popamp](https://github.com/popamp/popamp), skin format
-version 1; it needs Popamp 0.8.0 or newer. All artwork is the skin's own.
+version 1; it needs Popamp 1.0.0 or newer. All artwork is the skin's own.
 
 ## Window or bar
 
@@ -30,7 +30,7 @@ stays silver and the light and dark steps keep their places.
 
 ## Install
 
-With Popamp 0.8.0 or newer from [apt.popamp.app](https://apt.popamp.app):
+With Popamp 1.0.0 or newer from [apt.popamp.app](https://apt.popamp.app):
 
 ```sh
 sudo apt install popamp-skin-modern
