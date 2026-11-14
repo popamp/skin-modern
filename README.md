@@ -9,7 +9,7 @@ files are more complicated than the skin needs. Fork it and redraw it.
 
 A silver skin with round buttons that take clicks only on their shape and rounded windows.
 
-![Popamp Modern: main window, equalizer and playlist](preview.png)
+![Popamp Modern: main window, equalizer and playlist in every colour set, and the bar below](preview.png)
 
 A vector skin for [Popamp](https://github.com/popamp/popamp), skin format
 version 1; it needs Popamp 0.8.0 or newer. All artwork is the skin's own.

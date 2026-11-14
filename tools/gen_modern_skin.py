@@ -769,7 +769,7 @@ def main():
     T.lines.append("# Popamp Modern: a test skin with round buttons and rounded windows.")
     T.lines.append("# Own artwork; labels are DejaVu Sans Condensed Bold outlines.")
     # The main clock's `align` came in Popamp 0.8.0.
-    T.table("[meta]", name="Popamp Modern", author="Popamp", format_version=1, min_popamp="0.8.0")
+    T.table("[meta]", name="Popamp Modern", author="Popamp", format_version=1, min_popamp="1.0.0")
     T.table("[colors.Blue]", **BLUE)
     for name, degrees in OTHER_SETS:
         T.table(f"[colors.{name}]", **{key: turned(color, degrees) for key, color in BLUE.items()})
