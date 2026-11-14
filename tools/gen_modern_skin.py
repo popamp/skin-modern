@@ -577,17 +577,22 @@ def top_piece(name, w, text=None, left=False, right=False, folder="pl"):
     s.save(f"{folder}/{name}.svg")
 
 
-def side(name, w, groove, folder="pl"):
+def side(name, w):
     s = Svg(w, 29)
     s.add(f'<rect x="0" y="0" width="{w}" height="29" fill="{s.grad(BODY[1:], 1, 0)}"/>')
     edge = 0.5 if name == "left" else w - 0.5
     s.add(f'<line x1="{edge}" y1="0" x2="{edge}" y2="29" stroke="{EDGE}"/>')
-    if groove:
-        s.add(f'<rect x="5" y="0" width="8" height="29" fill="#1d2731"/>')
-    s.save(f"{folder}/{name}.svg")
+    s.save(f"pl/{name}.svg")
 
 
-def bottom(name, w, draw=None, corner=None, folder="pl"):
+def groove():
+    """The playlist's scroll groove, laid over the right side."""
+    s = Svg(8, 29)
+    s.add('<rect x="0" y="0" width="8" height="29" fill="#1d2731"/>')
+    s.save("pl/groove.svg")
+
+
+def bottom(name, w, draw=None, corner=None):
     s = Svg(w, 38)
     s.add(f'<path d="{cornered(w, 38, corner)}" fill="{s.grad(BODY[1:])}"/>')
     x0, x1 = (7 if corner == "bl" else 0), (w - 7 if corner == "br" else w)
@@ -595,27 +600,47 @@ def bottom(name, w, draw=None, corner=None, folder="pl"):
     s.add(f'<line x1="0" y1="0.5" x2="{w}" y2="0.5" stroke="#ffffff" opacity="0.7"/>')
     if draw:
         draw(s)
-    s.save(f"{folder}/{name}.svg")
+    s.save(f"pl/{name}.svg")
 
 
-def pills_on(s, items):
-    for x, text in items:
-        s.add(rrect(x + 0.5, 8.5, 24, 18, 4, s.grad(FACE), RING))
-        s.add(label(text, x + 12.5, 20, 6.5, INK))
+def pill_face(s, x):
+    s.add(rrect(x + 0.5, 8.5, 24, 18, 4, s.grad(FACE), RING))
+
+
+def pill_text(s, x, text):
+    s.add(label(text, x + 12.5, 20, 6.5, INK))
 
 
 def bottom_left(s):
     s.add(f'<path d="M0.5 0 V31 a6.5 6.5 0 0 0 6.5 6.5" fill="none" stroke="{EDGE}"/>')
-    pills_on(s, ((12, "ADD"), (40, "REM"), (68, "SEL"), (96, "MISC")))
 
 
-def bottom_right(s, pill="LIST"):
+PL_PILLS = ((12, "ADD"), (40, "REM"), (68, "SEL"), (96, "MISC"))
+
+
+def menus():
+    """The playlist's ADD, REM, SEL and MISC, laid over the bottom left."""
+    s = Svg(125, 38)
+    for x, text in PL_PILLS:
+        pill_face(s, x)
+        pill_text(s, x, text)
+    s.save("pl/menus.svg")
+
+
+def pill_label(path, text):
+    """The text on the bottom right pill; each window has its own."""
+    s = Svg(25, 38)
+    pill_text(s, 0, text)
+    s.save(path)
+
+
+def bottom_right(s):
     s.add(f'<path d="M149.5 0 V31 a6.5 6.5 0 0 1 -6.5 6.5" fill="none" stroke="{EDGE}"/>')
     panel(s, 7, 6, 86, 10, 2)
     panel(s, 68, 21, 30, 10, 2)
     for i, name in enumerate(("prev", "play", "pause", "stop", "next", "eject")):
         s.add(f'<g transform="translate({6 + i * 9},22)">' + ICONS[name](4, 7) + "</g>")
-    pills_on(s, ((106, pill),))
+    pill_face(s, 106)
     for k in (1, 2, 3):
         s.add(f'<path d="M{147 - 3 * k} 35 L147 {35 - 3 * k}" stroke="{RING}"/>')
 
@@ -652,11 +677,14 @@ def playlist_window():
     top_piece("top-tile", 25)
     top_piece("title", 100, text="PLAYLIST")
     top_piece("top-right", 25, right=True)
-    side("left", 12, False)
-    side("right", 20, True)
+    side("left", 12)
+    side("right", 20)
+    groove()
     bottom("bottom-left", 125, bottom_left, "bl")
     bottom("bottom-tile", 25)
     bottom("bottom-right", 150, bottom_right, "br")
+    menus()
+    pill_label("pl/list.svg", "LIST")
     thumb("pl/scroll-thumb.svg", 8, 18)
     for _, _, items in PL_MENUS:
         for key, text, _ in items:
@@ -664,20 +692,28 @@ def playlist_window():
     playlist_toml()
 
 
-def playlist_toml():
-    T.lines.append("\n# --- playlist ---")
-    T.table("[[window]]", key="playlist", placement="docked", empty_press="nothing", wheel_scrolls_list=True)
-    T.table("[window.normal]", size=[275, 116], resize_step=[25, 29], see_through=True, cursor="pnormal")
-    n = "normal"
+def frame(n, title, pill):
+    """The frame the playlist and the library share, with the window's own title and pill text."""
     T.el(n, type="image", edges=[0, 0, 25, 20], normal="pl/top-left.svg")
     T.el(n, type="image", edges=[25, 0, "end-25", 20], normal="pl/top-tile.svg", fill="tile")
-    T.el(n, type="image", edges=["center-50", 0, "center+50", 20], normal="pl/title.svg")
+    T.el(n, type="image", edges=["center-50", 0, "center+50", 20], normal=title)
     T.el(n, type="image", edges=["end-25", 0, "end", 20], normal="pl/top-right.svg")
     T.el(n, type="image", edges=[0, 20, 12, "end-38"], normal="pl/left.svg", fill="tile")
     T.el(n, type="image", edges=["end-20", 20, "end", "end-38"], normal="pl/right.svg", fill="tile")
     T.el(n, type="image", edges=[125, "end-38", "end-150", "end"], normal="pl/bottom-tile.svg", fill="tile")
     T.el(n, type="image", edges=[0, "end-38", 125, "end"], normal="pl/bottom-left.svg")
     T.el(n, type="image", edges=["end-150", "end-38", "end", "end"], normal="pl/bottom-right.svg")
+    T.el(n, type="image", edges=["end-44", "end-38", "end-19", "end"], normal=pill)
+
+
+def playlist_toml():
+    T.lines.append("\n# --- playlist ---")
+    T.table("[[window]]", key="playlist", placement="docked", empty_press="nothing", wheel_scrolls_list=True)
+    T.table("[window.normal]", size=[275, 116], resize_step=[25, 29], see_through=True, cursor="pnormal")
+    n = "normal"
+    frame(n, "pl/title.svg", "pl/list.svg")
+    T.el(n, type="image", edges=["end-15", 20, "end-7", "end-38"], normal="pl/groove.svg", fill="tile")
+    T.el(n, type="image", edges=[0, "end-38", 125, "end"], normal="pl/menus.svg")
     T.el(n, type="drag", edges=[0, 0, "end", 20], double="toggle-pl-shade", cursor="ptbar")
     T.el(n, type="button", edges=["end-17", 5, "end-7", 15], **look2("common/close.svg", 10, 10),
          click="toggle-playlist-window", cursor="pclose", tip="Close")
@@ -703,30 +739,19 @@ def playlist_toml():
 
 # --- media library ---------------------------------------------------------------
 # The playlist's frame with its own title; the bottom has no ADD, REM, SEL
-# and MISC, and its pill opens the library's menu. What is inside the frame
-# the player draws itself, in the [playlist] colours.
+# and MISC, the right side no scroll groove (each list in the window has its
+# own scroll bar), and its pill opens the library's menu. What is inside the
+# frame the player draws itself, in the [playlist] colours.
 
 
 def library_window():
     top_piece("title", 100, text="MEDIA LIBRARY", folder="ml")
-    bottom("bottom-left", 12, lambda s: s.add(f'<path d="M0.5 0 V31 a6.5 6.5 0 0 0 6.5 6.5" fill="none" stroke="{EDGE}"/>'),
-           "bl", folder="ml")
-    bottom("bottom-right", 150, lambda s: bottom_right(s, "MENU"), "br", folder="ml")
-    # Each list in the window has its own scroll bar, so the side has no groove.
-    side("right", 12, False, folder="ml")
+    pill_label("ml/menu.svg", "MENU")
     T.lines.append("\n# --- media library ---")
     T.table("[[window]]", key="library", placement="docked", empty_press="nothing", wheel_scrolls_list=True)
     T.table("[window.normal]", size=[275, 116], resize_step=[25, 29], see_through=True, cursor="pnormal")
     n = "normal"
-    T.el(n, type="image", edges=[0, 0, 25, 20], normal="pl/top-left.svg")
-    T.el(n, type="image", edges=[25, 0, "end-25", 20], normal="pl/top-tile.svg", fill="tile")
-    T.el(n, type="image", edges=["center-50", 0, "center+50", 20], normal="ml/title.svg")
-    T.el(n, type="image", edges=["end-25", 0, "end", 20], normal="pl/top-right.svg")
-    T.el(n, type="image", edges=[0, 20, 12, "end-38"], normal="pl/left.svg", fill="tile")
-    T.el(n, type="image", edges=["end-12", 20, "end", "end-38"], normal="ml/right.svg", fill="tile")
-    T.el(n, type="image", edges=[12, "end-38", "end-150", "end"], normal="pl/bottom-tile.svg", fill="tile")
-    T.el(n, type="image", edges=[0, "end-38", 12, "end"], normal="ml/bottom-left.svg")
-    T.el(n, type="image", edges=["end-150", "end-38", "end", "end"], normal="ml/bottom-right.svg")
+    frame(n, "ml/title.svg", "ml/menu.svg")
     T.el(n, type="drag", edges=[0, 0, "end", 20], cursor="ptbar")
     T.el(n, type="button", edges=["end-17", 5, "end-7", 15], **look2("common/close.svg", 10, 10),
          click="toggle-library-window", cursor="pclose", tip="Close")

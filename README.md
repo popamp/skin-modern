@@ -18,7 +18,7 @@ version 1; it needs Popamp 0.8.0 or newer. All artwork is the skin's own.
 
 The main window has a second view: a bar across the screen, at its top or
 bottom edge, with the playlist and the equalizer against it. Switch
-between the two in the main menu's "Main window as". This needs Popamp
+between the two in the main menu's "Toolbar mode". This needs Popamp
 1.0.0 or newer. It was a skin of its own before, Popamp Bar.
 
 ## Colours

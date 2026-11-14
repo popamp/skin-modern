@@ -982,6 +982,22 @@ edges = ["end-150", "end-38", "end", "end"]
 normal = "pl/bottom-right.svg"
 
 [[window.normal.element]]
+type = "image"
+edges = ["end-44", "end-38", "end-19", "end"]
+normal = "pl/list.svg"
+
+[[window.normal.element]]
+type = "image"
+edges = ["end-15", 20, "end-7", "end-38"]
+normal = "pl/groove.svg"
+fill = "tile"
+
+[[window.normal.element]]
+type = "image"
+edges = [0, "end-38", 125, "end"]
+normal = "pl/menus.svg"
+
+[[window.normal.element]]
 type = "drag"
 edges = [0, 0, "end", 20]
 double = "toggle-pl-shade"
@@ -1185,25 +1201,30 @@ fill = "tile"
 
 [[window.normal.element]]
 type = "image"
-edges = ["end-12", 20, "end", "end-38"]
-normal = "ml/right.svg"
+edges = ["end-20", 20, "end", "end-38"]
+normal = "pl/right.svg"
 fill = "tile"
 
 [[window.normal.element]]
 type = "image"
-edges = [12, "end-38", "end-150", "end"]
+edges = [125, "end-38", "end-150", "end"]
 normal = "pl/bottom-tile.svg"
 fill = "tile"
 
 [[window.normal.element]]
 type = "image"
-edges = [0, "end-38", 12, "end"]
-normal = "ml/bottom-left.svg"
+edges = [0, "end-38", 125, "end"]
+normal = "pl/bottom-left.svg"
 
 [[window.normal.element]]
 type = "image"
 edges = ["end-150", "end-38", "end", "end"]
-normal = "ml/bottom-right.svg"
+normal = "pl/bottom-right.svg"
+
+[[window.normal.element]]
+type = "image"
+edges = ["end-44", "end-38", "end-19", "end"]
+normal = "ml/menu.svg"
 
 [[window.normal.element]]
 type = "drag"
