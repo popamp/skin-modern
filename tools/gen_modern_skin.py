@@ -220,6 +220,17 @@ GLYPH_CLOSE = f'<path d="M3 3 L7 7 M7 3 L3 7" stroke="{INK}" stroke-width="1.3"/
 GLYPH_MAX = f'<path d="M2.5 3.2 h5 v3.6 h-5 Z" stroke="{INK}" stroke-width="0.9" fill="none"/><path d="M2.5 3.9 h5" stroke="{INK}" stroke-width="1.4"/>'
 
 
+def volume_balance(mode, x, y, gap):
+    """The volume slider at `x`, `y` and the small balance one `gap` to its right."""
+    vol_thumb = {"normal": part("main/vol-thumb.svg", 0, 0, 10, 10), "pressed": part("main/vol-thumb.svg", 10, 0, 10, 10)}
+    T.el(mode, type="slider", rect=[x, y, 76, 10], value="volume",
+         track={"file": "main/volume.svg", "first": [0, 0, 76, 10], "step": [0, 10], "count": 28},
+         thumb=vol_thumb, thumb_len=10, reset=200, wheel_step=8, cursor="volbal", tip="Volume")
+    T.el(mode, type="image", rect=[x + gap, y, 18, 10], normal=part("main/balance.svg", 0, 0, 18, 10))
+    T.el(mode, type="slider", rect=[x + gap, y, 18, 10], value="balance", thumb=vol_thumb, thumb_len=10, reset=0, detent=16,
+         cursor="volbal", tip="Balance")
+
+
 def title_buttons(mode, w, close_cmd, shade_cmd=None, menu=True, minimize=False):
     if menu:
         T.el(mode, type="button", rect=[6, 3, 10, 10], **look2("common/menu.svg", 10, 10), menu_press="main",
@@ -356,22 +367,25 @@ def main_toml():
         y = 92 - d // 2
         lk = look2(f"main/{name}.svg", d, d)
         T.el(n, type="button", rect=[x, y, d, d], **lk, hit=lk["normal"], **act, menu=menu, tip=tip)
-    # Volume and balance.
-    T.el(n, type="slider", rect=[164, 89, 76, 10], value="volume",
-         track={"file": "main/volume.svg", "first": [0, 0, 76, 10], "step": [0, 10], "count": 28},
-         thumb={"normal": part("main/vol-thumb.svg", 0, 0, 10, 10), "pressed": part("main/vol-thumb.svg", 10, 0, 10, 10)},
-         thumb_len=10, reset=200, wheel_step=8, cursor="volbal", tip="Volume")
-    T.el(n, type="image", rect=[244, 89, 18, 10], normal=part("main/balance.svg", 0, 0, 18, 10))
-    T.el(n, type="slider", rect=[244, 89, 18, 10], value="balance",
-         thumb={"normal": part("main/vol-thumb.svg", 0, 0, 10, 10), "pressed": part("main/vol-thumb.svg", 10, 0, 10, 10)},
-         thumb_len=10, reset=0, detent=16, cursor="volbal", tip="Balance")
+    volume_balance(n, 164, 89, 80)
+
+
+# Every window's shade strip is this high and the main window's width.
+SHADE_H = 16
+
+
+def shade_strip(display=None):
+    """The silver strip of a shaded window, with a display (x, width) set into it."""
+    s = Svg(MAIN_W, SHADE_H)
+    s.add(rrect(0.5, 0.5, MAIN_W - 1, SHADE_H - 1, 6, s.grad(BODY), EDGE))
+    if display:
+        s.add(rrect(display[0], 3, display[1], 10, 2, s.grad(LCD), "#3a4450"))
+    return s
 
 
 def main_shade():
     W = MAIN_W
-    s = Svg(W, 16)
-    s.add(rrect(0.5, 0.5, W - 1, 15, 6, s.grad(BODY), EDGE))
-    s.add(rrect(70, 3, 132, 10, 2, s.grad(LCD), "#3a4450"))
+    s = shade_strip((70, 132))
     s.save("main/shade.svg")
     T.table("[window.shade]", size=[W, 16], see_through=True)
     m = "shade"
@@ -538,7 +552,7 @@ def eq_window():
     n = "normal"
     T.el(n, type="image", rect=[0, 0, W, H], normal="eq/bg.svg")
     T.el(n, type="drag", rect=[0, 0, W, 14], cursor="eqtitle")
-    title_buttons(n, W, "toggle-eq-window", menu=False)
+    title_buttons(n, W, "toggle-eq-window", "toggle-eq-shade", menu=False)
     T.el(n, type="toggle", rect=[9, 19, 28, 11], **look4("eq/on.svg", 28, 11), flag="eq-on", click="toggle-eq")
     T.el(n, type="toggle", rect=[40, 19, 36, 11], **look4("eq/auto.svg", 36, 11), flag="eq-autoload",
          click="toggle-eq-autoload")
@@ -552,10 +566,25 @@ def eq_window():
                     "map": "falling"},
              thumb={"normal": part("eq/thumb.svg", 0, 0, 14, 7), "pressed": part("eq/thumb.svg", 14, 0, 14, 7)},
              thumb_len=7, reset=31, wheel_step=-2, cursor="eqslid", menu="eq-presets")
+    eq_shade()
+
+
+def eq_shade():
+    """The shaded equalizer, as in the classic skins: its name, the volume and the balance."""
+    s = shade_strip()
+    s.add(label("EQUALIZER", 10, 10.5, 6.5, INK, "start"))
+    s.save("eq/shade.svg")
+    T.table("[window.shade]", size=[MAIN_W, SHADE_H], see_through=True, cursor="eqnormal")
+    m = "shade"
+    T.el(m, type="image", rect=[0, 0, MAIN_W, SHADE_H], normal="eq/shade.svg")
+    T.el(m, type="drag", rect=[0, 0, MAIN_W, SHADE_H], double="toggle-eq-shade", cursor="eqtitle")
+    volume_balance(m, 70, 3, 82)
+    title_buttons(m, MAIN_W, "toggle-eq-window", "toggle-eq-shade", menu=False)
 
 
 # --- playlist --------------------------------------------------------------------
-# Top: left cap 25, tile 25, title 100 (centred), right cap 25; all 20 high.
+# Top: left cap 25, tile 25, title 100 (centred), right cap 37 under the two title buttons; all 20 high.
+TOP_RIGHT = 37
 
 
 def top_piece(name, w, text=None, left=False, right=False, folder="pl"):
@@ -677,7 +706,7 @@ def playlist_window():
     top_piece("top-left", 25, left=True)
     top_piece("top-tile", 25)
     top_piece("title", 100, text="PLAYLIST")
-    top_piece("top-right", 25, right=True)
+    top_piece("top-right", TOP_RIGHT, right=True)
     side("left", 12)
     side("right", 20)
     groove()
@@ -693,12 +722,17 @@ def playlist_window():
     playlist_toml()
 
 
+def top_row(n, title):
+    """The top the playlist and the library share, with the window's own title."""
+    T.el(n, type="image", edges=[0, 0, 25, 20], normal="pl/top-left.svg")
+    T.el(n, type="image", edges=[25, 0, f"end-{TOP_RIGHT}", 20], normal="pl/top-tile.svg", fill="tile")
+    T.el(n, type="image", edges=["center-50", 0, "center+50", 20], normal=title)
+    T.el(n, type="image", edges=[f"end-{TOP_RIGHT}", 0, "end", 20], normal="pl/top-right.svg")
+
+
 def frame(n, title, pill):
     """The frame the playlist and the library share, with the window's own title and pill text."""
-    T.el(n, type="image", edges=[0, 0, 25, 20], normal="pl/top-left.svg")
-    T.el(n, type="image", edges=[25, 0, "end-25", 20], normal="pl/top-tile.svg", fill="tile")
-    T.el(n, type="image", edges=["center-50", 0, "center+50", 20], normal=title)
-    T.el(n, type="image", edges=["end-25", 0, "end", 20], normal="pl/top-right.svg")
+    top_row(n, title)
     T.el(n, type="image", edges=[0, 20, 12, "end-38"], normal="pl/left.svg", fill="tile")
     T.el(n, type="image", edges=["end-20", 20, "end", "end-38"], normal="pl/right.svg", fill="tile")
     T.el(n, type="image", edges=[125, "end-38", "end-150", "end"], normal="pl/bottom-tile.svg", fill="tile")
@@ -716,6 +750,8 @@ def playlist_toml():
     T.el(n, type="image", edges=["end-15", 20, "end-7", "end-38"], normal="pl/groove.svg", fill="tile")
     T.el(n, type="image", edges=[0, "end-38", 125, "end"], normal="pl/menus.svg")
     T.el(n, type="drag", edges=[0, 0, "end", 20], double="toggle-pl-shade", cursor="ptbar")
+    T.el(n, type="button", edges=["end-29", 5, "end-19", 15], **look2("common/shade.svg", 10, 10),
+         click="toggle-pl-shade", tip="Toggle Windowshade Mode")
     T.el(n, type="button", edges=["end-17", 5, "end-7", 15], **look2("common/close.svg", 10, 10),
          click="toggle-playlist-window", cursor="pclose", tip="Close")
     T.el(n, type="list", edges=[12, 20, "end-20", "end-38"], menu="playlist-row")
@@ -736,6 +772,21 @@ def playlist_toml():
             T.lines.append(f'pressed = {val(part(f"pl/item-{key}.svg", 22, 0, 22, 18))}')
             for k, v in act.items():
                 T.lines.append(f"{k} = {val(v)}")
+    playlist_shade()
+
+
+def playlist_shade():
+    """The shaded playlist, as in the classic skins: the song and the time on a display.
+
+    A vector shade mode cannot follow the playlist's width, so it is the main window's."""
+    shade_strip((8, 228)).save("pl/shade.svg")
+    T.table("[window.shade]", size=[MAIN_W, SHADE_H], see_through=True, cursor="pnormal")
+    m = "shade"
+    T.el(m, type="image", rect=[0, 0, MAIN_W, SHADE_H], normal="pl/shade.svg")
+    T.el(m, type="drag", rect=[0, 0, MAIN_W, SHADE_H], double="toggle-pl-shade", cursor="ptbar")
+    T.el(m, type="text", rect=[11, 4, 180, 8], text="title")
+    T.el(m, type="text", rect=[196, 4, 38, 8], text="playlist-clock", hide="stopped")
+    title_buttons(m, MAIN_W, "toggle-playlist-window", "toggle-pl-shade", menu=False)
 
 
 # --- media library ---------------------------------------------------------------
@@ -860,10 +911,7 @@ def library_window():
     T.table("[[window]]", key="library", placement="docked", empty_press="nothing", wheel_scrolls_list=True)
     T.table("[window.normal]", size=[400, 232], resize_step=[25, 29], see_through=True, cursor="pnormal")
     n, top, low = "normal", ML_LIST_TOP, f"end-{38 + ML_SEEK_H}"
-    T.el(n, type="image", edges=[0, 0, 25, 20], normal="pl/top-left.svg")
-    T.el(n, type="image", edges=[25, 0, "end-25", 20], normal="pl/top-tile.svg", fill="tile")
-    T.el(n, type="image", edges=["center-50", 0, "center+50", 20], normal="ml/title.svg")
-    T.el(n, type="image", edges=["end-25", 0, "end", 20], normal="pl/top-right.svg")
+    top_row(n, "ml/title.svg")
     ml_row(n, "strip", ML_STRIP_TOP, ML_STRIP_H)
     T.el(n, type="image", edges=[0, top, 12, low], normal="pl/left.svg", fill="tile")
     T.el(n, type="image", edges=["end-20", top, "end", low], normal="pl/right.svg", fill="tile")
@@ -926,7 +974,7 @@ def main():
     T.lines.append("# Popamp Modern: a test skin with round buttons and rounded windows.")
     T.lines.append("# Own artwork; labels are DejaVu Sans Condensed Bold outlines.")
     # The main clock's `align` came in Popamp 0.8.0.
-    T.table("[meta]", name="Popamp Modern", author="Popamp", format_version=1, min_popamp="1.0.0")
+    T.table("[meta]", name="Popamp Modern", author="Popamp", format_version=1, min_popamp="1.2.0")
     T.table("[colors.Blue]", **BLUE)
     for name, degrees in OTHER_SETS:
         T.table(f"[colors.{name}]", **{key: turned(color, degrees) for key, color in BLUE.items()})
